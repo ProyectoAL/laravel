@@ -39,9 +39,9 @@ class UserController extends Controller
         $user->role = $request->role;
 
         if (!empty($user->date)) {
-            $user->role = "student";
+            $user->role = "Alumno";
         } else {
-            $user->role = "teacher";
+            $user->role = "Profesor";
         }
         $user->save();
         // Auth::login($user);
@@ -77,24 +77,15 @@ class UserController extends Controller
     }
     public function update(Request $request, $id)
     {
+        $request->validate([
+            "password" => "required"
+        ]);
 
-        $user_id = User::find($id);
-        if ($user_id) {
-            $user_id->password = Hash::make($request->input('password'));
-            $user_id->save();
-            return response()->json([
-                'message' => 'Contraseña actualizada correctamente.'
-            ]);
-        } else {
-            return response()->json([
-                'error' => 'Usuario no encontrado.'
-            ], 404);
-        }
-        /*$user_id = $id;
+        $user_id = $id;
         if (user::where(["id" => $user_id])->exists()) {
-            $update = user::find($user_id);
-            $update->password = Hash::make($request->password);
-            $update->save();
+            $user_id = user::find($user_id);
+            $user_id->password = Hash::make($request->password);
+            $user_id->save();
             return response()->json([
                 "status" => 1,
                 "message" => "Actualizado correctamente",
@@ -104,6 +95,6 @@ class UserController extends Controller
                 "status" => 1,
                 "message" => "No se pùdo actucalizar",
             ]);
-        }*/
+        }
     }
 }
